@@ -1,7 +1,7 @@
 #***********************************************************************************
 #*                           Algoritmo Genético                                    *
 #*---------------------------------------------------------------------------------*
-#* @AUTHOR: Samuel Filipe dos Santos e Giulio Castro                               *
+#* @AUTHOR: Samuel Filipe dos Santos                                               *
 #* @TEACHER: Rogério Martins Gomes.                                                *
 #* @LANGUAGE: Python                                                               *
 #* @DISCIPLINE: Inteligência Artificial                                            *
