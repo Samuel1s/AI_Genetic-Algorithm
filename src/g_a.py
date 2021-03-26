@@ -59,6 +59,10 @@ MIN_VALUE = 152.0000
 def bird_function(x, y):
     return np.sin(x) * np.exp((1 - np.cos(y)) ** 2) + np.cos(y) * np.exp((1 - np.sin(x)) ** 2) + (x - y) ** 2
 
+def plot_function(arr, color):
+    for a in arr:
+        plot.plot(a[0], a[1], color)
+   
 def objective(x, y):
     return MIN_VALUE - ( math.sin(x) * math.exp((1 - math.cos(y)) ** 2) + math.cos(y) * math.exp((1 - math.sin(x)) ** 2) + (x - y) ** 2 )
 
@@ -110,6 +114,7 @@ def match(a):
 def main():
     P, Best, Worse, Gen = [], None, None, 0
     b_dist, w_dist, a_dist = [], [], []
+    c_betters, c_worses = [], []
 
     for i in range(POPULATION_SIZE):
         x = random.uniform(-10, 10)
@@ -119,16 +124,18 @@ def main():
 
     while Gen < MAX_GENERATIONS and not match(Best):
         Q, Total = [], 0
-
+    
         for a in P:
             f = fitness(a)
             Total += f
 
             if not Best or f > fitness(Best):
                 Best = a
+                c_betters.append(a)
 
             if not Worse or f < fitness(Worse):
                 Worse = a
+                c_worses.append(a)
 
         for _ in range(POPULATION_SIZE // 2):
             Pa = select(P)
@@ -142,26 +149,43 @@ def main():
         b_dist.append(fitness(Best))
         w_dist.append(fitness(Worse))
         a_dist.append(Total / len(P))
-
+  
         P = Q
         Gen += 1
 
     print('MELHORES VALORES ENCONTRADOS:')
+    for x in c_betters:
+        print('[ (X, Y) =', x[0], ',', x[1], ']')
+    print('-------------------------------------------------------')
+    print('')
+    print('MELHOR VALOR ENCONTRADO:')
     print('[ X =', Best[0], ']')
     print('[ Y =', Best[1], ']')
     print('[ Z =', -(fitness(Best) - MIN_VALUE), ']')
-
+    print('-------------------------------------------------------')
+    print('')
+    
+    print('PIORES VALORES ENCONTRADOS:')
+    for x in c_worses:
+        print('[ (X, Y) =', x[0], ',', x[1], ']')
+    print('-------------------------------------------------------')
+    print('')
+    print('PIOR VALOR ENCONTRADO:')
+    print('[ X =', Worse[0], ']')
+    print('[ Y =', Worse[1], ']')
+    print('[ Z =', -(fitness(Worse) - MAX_VALUE), ']')
     print('-------------------------------------------------------')
     print('')
 
     g_dist = range(MAX_GENERATIONS)
-
+    
+    plot.figure(figsize=(10, 7))
     plot.subplot(2, 1, 1)
     plot.plot(g_dist, b_dist, 'b', label='Best')
     plot.plot(g_dist, w_dist, 'r', label='Worse')
     plot.plot(g_dist, a_dist, 'g', label='Average')
-    plot.xlabel('generations')
     plot.ylabel('values')
+    plot.title('Gerações x Valores')
     plot.legend(bbox_to_anchor=(0.95,0.5), loc="lower right",  borderaxespad=0.)
 
     plot.subplot(2, 1, 2)
@@ -173,6 +197,11 @@ def main():
     plot.contour(X,Y,Z)
     plot.xlabel('generations')
     plot.ylabel('values')
+    plot.title('Curva Nível - Piores e Melhores Valores')
+    plot_function(c_betters, 'bo')
+    plot_function(c_worses, 'ro')   
+    plot.plot(Best[0], Best[1], 'go') 
+   
     plot.show()
 
    
